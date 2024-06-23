@@ -20,6 +20,9 @@ function getCalls(validatorId: string) {
     ]),
     functionName: 'activateBoost',
     args: [validatorId],
+    options: {
+      gasLimit: 1000000n,
+    },
   }
 }
 
