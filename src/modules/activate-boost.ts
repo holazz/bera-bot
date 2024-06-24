@@ -28,7 +28,11 @@ function getCalls(validatorId: string) {
 
 async function _sendTransaction(signer: Wallet) {
   const userValidators = await getUserValidators(signer.address)
-  if (userValidators.length === 0) {
+  const amountQueued = userValidators.reduce(
+    (acc: any, cur: any) => acc + Number(cur?.userValidator?.amountQueued || 0),
+    0,
+  )
+  if (userValidators.length === 0 || amountQueued === 0) {
     logger.error(signer.address, '代理队列为空')
     return
   }
