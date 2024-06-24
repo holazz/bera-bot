@@ -158,7 +158,6 @@ export async function run() {
 
   if (res.length === 0) return await run()
 
-  console.log(999, res)
   res.flat().map(async (r, i) => {
     console.log(
       `\n${c.bold(generateWalletTitle(r!.address))}\n${c.bold(
