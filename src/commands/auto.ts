@@ -158,6 +158,7 @@ export async function run() {
 
   if (res.length === 0) return await run()
 
+  console.log(999, res)
   res.flat().map(async (r, i) => {
     console.log(
       `\n${c.bold(generateWalletTitle(r!.address))}\n${c.bold(
@@ -180,7 +181,13 @@ export async function run() {
     )
   })
 
-  const records = updateRecords(data, filteredData)
+  const validIndexes = res
+    .flat()
+    .map((r) => filteredData.findIndex(([f]) => f.address === r!.address))
+  const records = updateRecords(
+    data,
+    filteredData.filter((_, i) => validIndexes.includes(i)),
+  )
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const csv = await json2csv(records.map(({ privateKey, ...rest }) => rest))
   await fsp.writeFile('records.csv', csv)
