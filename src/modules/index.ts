@@ -1,4 +1,4 @@
-// import swapHoney from './swap-honey'
+import bexSwap from './bex-swap'
 import mintHoney from './mint-honey'
 import depositHoney from './deposit-honey'
 import stakeBHoney from './stake-bhoney'
@@ -7,7 +7,7 @@ import queueBoost from './queue-boost'
 import activateBoost from './activate-boost'
 
 export default [
-  // swapHoney,
+  bexSwap,
   mintHoney,
   depositHoney,
   stakeBHoney,
