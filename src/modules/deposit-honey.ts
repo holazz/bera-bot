@@ -1,21 +1,25 @@
 import 'dotenv/config'
-import { Contract } from 'ethers'
+import { Contract, constants } from 'ethers'
 import tokens from '../constants/tokens'
 import {
+  approveToken,
   estimateGasFee,
   generateModuleTitle,
+  getAllowance,
   getTokenBalance,
   sendTransaction,
 } from '../utils'
 import logger from '../utils/logger'
 import type { BigNumber, Wallet } from 'ethers'
 
+const contractAddress = '0x1306D3c36eC7E38dd2c128fBe3097C2C2449af64'
+
 async function getCalls(signer: Wallet, honeyBalance?: BigNumber) {
   if (!honeyBalance) {
     honeyBalance = await getTokenBalance(signer, tokens.HONEY, signer.address)
   }
   return {
-    contract: new Contract('0x1306D3c36eC7E38dd2c128fBe3097C2C2449af64', [
+    contract: new Contract(contractAddress, [
       {
         type: 'function',
         name: 'deposit',
@@ -44,6 +48,17 @@ async function _sendTransaction(signer: Wallet) {
   if (honeyBalance.isZero()) {
     logger.error(signer.address, 'HONEY 余额不足')
     return
+  }
+  const allowance = await getAllowance(signer, tokens.HONEY, contractAddress)
+  if (allowance.lt(honeyBalance)) {
+    logger.info(signer.address, `等待授权 HONEY...`)
+    const approveTx = await approveToken(
+      signer,
+      tokens.HONEY,
+      contractAddress,
+      constants.MaxInt256,
+    )
+    logger.info(signer.address, `授权 HONEY 完成 ${approveTx.hash}`)
   }
   const calls = await getCalls(signer, honeyBalance)
   return sendTransaction(signer, calls)

@@ -1,21 +1,25 @@
 import 'dotenv/config'
-import { Contract } from 'ethers'
+import { Contract, constants } from 'ethers'
 import tokens from '../constants/tokens'
 import {
+  approveToken,
   estimateGasFee,
   generateModuleTitle,
+  getAllowance,
   getTokenBalance,
   sendTransaction,
 } from '../utils'
 import logger from '../utils/logger'
 import type { BigNumber, Wallet } from 'ethers'
 
+const contractAddress = '0xAd1782b2a7020631249031618fB1Bd09CD926b31'
+
 async function getCalls(signer: Wallet, usdcBalance?: BigNumber) {
   if (!usdcBalance) {
     usdcBalance = await getTokenBalance(signer, tokens.USDC, signer.address)
   }
   return {
-    contract: new Contract('0xAd1782b2a7020631249031618fB1Bd09CD926b31', [
+    contract: new Contract(contractAddress, [
       {
         type: 'function',
         name: 'mint',
@@ -38,6 +42,17 @@ async function _sendTransaction(signer: Wallet) {
   if (usdcBalance.isZero()) {
     logger.error(signer.address, 'USDC 余额不足')
     return
+  }
+  const allowance = await getAllowance(signer, tokens.USDC, contractAddress)
+  if (allowance.lt(usdcBalance)) {
+    logger.info(signer.address, `等待授权 USDC...`)
+    const approveTx = await approveToken(
+      signer,
+      tokens.USDC,
+      contractAddress,
+      constants.MaxInt256,
+    )
+    logger.info(signer.address, `授权 USDC 完成 ${approveTx.hash}`)
   }
   const calls = await getCalls(signer, usdcBalance)
   return sendTransaction(signer, calls)

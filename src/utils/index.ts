@@ -36,6 +36,21 @@ export function getTokenBalance(
   return contract.balanceOf(address)
 }
 
+export async function getAllowance(
+  signer: Wallet,
+  tokenAddress: string,
+  spender: string,
+) {
+  const contract = new Contract(
+    tokenAddress,
+    [
+      'function allowance(address owner, address spender) view returns (uint256)',
+    ],
+    signer,
+  )
+  return contract.allowance(signer.address, spender)
+}
+
 export async function approveToken(
   signer: Wallet,
   tokenAddress: string,
@@ -48,7 +63,8 @@ export async function approveToken(
     signer,
   )
   const tx = await contract.approve(spender, amount)
-  return tx.wait()
+  await tx.wait()
+  return tx
 }
 
 export async function estimateGasFee(signer: Wallet, calls: Calls) {
