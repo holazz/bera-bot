@@ -11,7 +11,9 @@ const contract = new Contract('0x21e2C0AFd058A89FCf7caf3aEA3cB84Ae977B73D', ABI)
 
 async function getCalls(signer: Wallet, amountIn?: BigNumber, steps?: any) {
   if (!amountIn) {
-    amountIn = (await signer.getBalance()).mul(80).div(100)
+    amountIn = (await signer.getBalance())
+      .mul(Number(process.env.BERA_PERCENTAGE) * 100)
+      .div(100)
   }
   if (!steps) {
     steps = await getBexSwapRoute(tokens.BERA, tokens.HONEY, amountIn)
@@ -34,7 +36,9 @@ async function _sendTransaction(signer: Wallet) {
     logger.error(signer.address, 'BERA 余额太少')
     return
   }
-  const amountIn = beraBalance.mul(80).div(100)
+  const amountIn = beraBalance
+    .mul(Number(process.env.BERA_PERCENTAGE) * 100)
+    .div(100)
 
   const steps = await getBexSwapRoute(tokens.BERA, tokens.HONEY, amountIn)
   if (!steps) {
@@ -46,7 +50,7 @@ async function _sendTransaction(signer: Wallet) {
     .connect(signer)
     .previewMultiSwap(steps, amountIn)
 
-  if (preview[0].lt(amountIn.mul(10))) {
+  if (preview[0].lt(amountIn.mul(8))) {
     logger.error(signer.address, '兑换率太低')
     return
   }

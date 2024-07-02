@@ -15,7 +15,11 @@ import type { BigNumber, Wallet } from 'ethers'
 const contractAddress = '0xC5Cb3459723B828B3974f7E58899249C2be3B33d'
 async function getCalls(signer: Wallet, bHoneyBalance?: BigNumber) {
   if (!bHoneyBalance) {
-    bHoneyBalance = await getTokenBalance(signer, tokens.bHONEY, signer.address)
+    bHoneyBalance = (
+      await getTokenBalance(signer, tokens.bHONEY, signer.address)
+    )
+      .mul(Number(process.env.BHONEY_PERCENTAGE) * 100)
+      .div(100)
   }
   return {
     contract: new Contract(contractAddress, [
@@ -33,11 +37,11 @@ async function getCalls(signer: Wallet, bHoneyBalance?: BigNumber) {
 }
 
 async function _sendTransaction(signer: Wallet) {
-  const bHoneyBalance = await getTokenBalance(
-    signer,
-    tokens.bHONEY,
-    signer.address,
+  const bHoneyBalance = (
+    await getTokenBalance(signer, tokens.bHONEY, signer.address)
   )
+    .mul(Number(process.env.BHONEY_PERCENTAGE) * 100)
+    .div(100)
   if (bHoneyBalance.isZero()) {
     logger.error(signer.address, 'bHONEY 余额不足')
     return

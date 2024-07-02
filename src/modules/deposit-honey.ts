@@ -16,7 +16,9 @@ const contractAddress = '0x1306D3c36eC7E38dd2c128fBe3097C2C2449af64'
 
 async function getCalls(signer: Wallet, honeyBalance?: BigNumber) {
   if (!honeyBalance) {
-    honeyBalance = await getTokenBalance(signer, tokens.HONEY, signer.address)
+    honeyBalance = (await getTokenBalance(signer, tokens.HONEY, signer.address))
+      .mul(Number(process.env.HONEY_PERCENTAGE) * 100)
+      .div(100)
   }
   return {
     contract: new Contract(contractAddress, [
@@ -40,11 +42,11 @@ async function getCalls(signer: Wallet, honeyBalance?: BigNumber) {
 }
 
 async function _sendTransaction(signer: Wallet) {
-  const honeyBalance = await getTokenBalance(
-    signer,
-    tokens.HONEY,
-    signer.address,
+  const honeyBalance = (
+    await getTokenBalance(signer, tokens.HONEY, signer.address)
   )
+    .mul(Number(process.env.HONEY_PERCENTAGE) * 100)
+    .div(100)
   if (honeyBalance.isZero()) {
     logger.error(signer.address, 'HONEY 余额不足')
     return
