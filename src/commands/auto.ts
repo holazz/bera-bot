@@ -158,7 +158,7 @@ export async function run() {
 
   if (res.length === 0) return await run()
 
-  res.flat().map(async (r, i) => {
+  res.flat().map(async (r) => {
     console.log(
       `\n${c.bold(generateWalletTitle(r!.address))}\n${c.bold(
         'Nonce: ',
@@ -171,7 +171,11 @@ export async function run() {
       `${dayjs().format('YYYY-MM-DD HH:mm:ss')} ${generateWalletTitle(
         r!.address,
       )} ${
-        modules.find((m) => m.value === submitInfo[i].project)!.title
+        modules.find(
+          (m) =>
+            m.value ===
+            submitInfo.find((s) => s.address === r!.address)!.project,
+        )!.title
       } ${`https://bartio.beratrail.io/tx/${r!.tx}`}\n`.replace(
         // eslint-disable-next-line no-control-regex
         /\x1B\[\d+m/g,
