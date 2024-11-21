@@ -20,7 +20,7 @@ export async function getBexSwapRoute(
   amount: BigNumber,
 ) {
   const res = await axios.get(
-    'https://bartio-bex-router.berachain-devnet.com/dex/route',
+    'https://bartio-bex-router.berachain.com/dex/route',
     {
       params: {
         fromAsset,
