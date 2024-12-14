@@ -34,7 +34,7 @@ export async function getBexSwapRoute(
 
 export async function getValidators() {
   const res = await axios.get(
-    'https://bartio-pol-indexer.berachain-devnet.com/berachain/v1alpha1/beacon/validators',
+    'https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/validators',
     {
       params: {
         sortBy: 'votingpower',
@@ -50,7 +50,7 @@ export async function getValidators() {
 
 export async function getUserValidators(address: string) {
   const res = await axios.get(
-    `https://bartio-pol-indexer.berachain-devnet.com/berachain/v1alpha1/beacon/user/${address}/validators`,
+    `https://bartio-pol-indexer.berachain.com/berachain/v1alpha1/beacon/user/${address}/validators`,
   )
   return res.data.userValidators
 }

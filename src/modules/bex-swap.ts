@@ -50,7 +50,7 @@ async function _sendTransaction(signer: Wallet) {
     .connect(signer)
     .previewMultiSwap(steps, amountIn)
 
-  if (preview[0].lt(amountIn.mul(8))) {
+  if (preview[0].lt(amountIn.mul(4))) {
     logger.error(signer.address, '兑换率太低')
     return
   }
