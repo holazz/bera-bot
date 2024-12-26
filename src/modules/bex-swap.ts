@@ -16,7 +16,11 @@ async function getCalls(signer: Wallet, amountIn?: BigNumber, steps?: any) {
       .div(100)
   }
   if (!steps) {
-    steps = await getBexSwapRoute(tokens.BERA, tokens.HONEY, amountIn)
+    steps = await getBexSwapRoute(
+      tokens.BERA,
+      tokens[process.env.SWAP_TOKEN as 'HONEY'],
+      amountIn,
+    )
   }
   steps[0].quote = constants.AddressZero
   return {
@@ -32,7 +36,7 @@ async function getCalls(signer: Wallet, amountIn?: BigNumber, steps?: any) {
 
 async function _sendTransaction(signer: Wallet) {
   const beraBalance = await signer.getBalance()
-  if (beraBalance.lt(utils.parseEther('0.5'))) {
+  if (beraBalance.lt(utils.parseEther('0.1'))) {
     logger.error(signer.address, 'BERA 余额太少')
     return
   }
@@ -40,7 +44,11 @@ async function _sendTransaction(signer: Wallet) {
     .mul(Number(process.env.BERA_PERCENTAGE) * 100)
     .div(100)
 
-  const steps = await getBexSwapRoute(tokens.BERA, tokens.HONEY, amountIn)
+  const steps = await getBexSwapRoute(
+    tokens.BERA,
+    tokens[process.env.SWAP_TOKEN as 'HONEY'],
+    amountIn,
+  )
   if (!steps) {
     logger.error(signer.address, '未找到兑换路径')
     return
@@ -60,7 +68,7 @@ async function _sendTransaction(signer: Wallet) {
 }
 
 export default {
-  title: `${generateModuleTitle('Bex')} BERA 兑换成 HONEY`,
+  title: `${generateModuleTitle('Bex')} BERA 兑换成 ${process.env.SWAP_TOKEN}`,
   value: 'bexSwap',
   estimateGasFee: async (signer: Wallet) =>
     estimateGasFee(signer, await getCalls(signer)),

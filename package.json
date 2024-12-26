@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "tsx src/index.ts",
     "schedule": "tsx src/schedule.ts",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "postinstall": "tsx scripts/postinstall.ts"
   },
   "dependencies": {
     "axios": "^1.5.1",

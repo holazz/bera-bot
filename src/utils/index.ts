@@ -8,9 +8,7 @@ import type { BigNumber, Wallet } from 'ethers'
 import type { Calls } from '../types'
 
 export function getProvider() {
-  // return new providers.JsonRpcProvider('https://bartio.rpc.berachain.com')
-  // return new providers.JsonRpcProvider('https://bartio.drpc.org')
-  return new providers.JsonRpcProvider('https://bera-testnet.nodeinfra.com')
+  return new providers.JsonRpcProvider('https://bartio.rpc.berachain.com')
 }
 
 export function getTokenDecimals(
