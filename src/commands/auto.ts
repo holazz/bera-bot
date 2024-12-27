@@ -24,7 +24,7 @@ async function generateData() {
   let records: Data[] = []
   if (fs.existsSync('records.csv')) {
     const csv = await fsp.readFile('records.csv', 'utf-8')
-    records = (await csv2json(csv)) as Data[]
+    if (csv) records = (await csv2json(csv)) as Data[]
   }
   const data = resolvedWallets.map((wallet) => {
     const projects = modules.reduce(
