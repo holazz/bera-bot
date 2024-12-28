@@ -5,6 +5,7 @@ import stakeBHoney from './stake-bhoney'
 import claimBGT from './claim-bgt'
 import queueBoost from './queue-boost'
 import activateBoost from './activate-boost'
+import erc20Approval from './erc20-approval'
 
 export default [
   bexSwap,
@@ -14,4 +15,5 @@ export default [
   claimBGT,
   queueBoost,
   activateBoost,
+  ...erc20Approval,
 ]
